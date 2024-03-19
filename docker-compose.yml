@@ -1,16 +1,35 @@
-version: '3'
+version: "3"
 
 services:
   app:
     container_name: app
-    build: 
+    build:
       context: .docker/node
       dockerfile: Dockerfile
       args:
         - NODE_ENV=development
     entrypoint: .docker/node/entrypoint.sh
     volumes:
-      - .:/home/node/app 
+      - .:/home/node/app
+    environment:
+      - PGUSER=postgres
+      - PGHOST=db
+      - PGPASSWORD=postgres
+      - PGDATABASE=postgres
+      - PGPORT=5432
     ports:
-      - "3000:3000"  
-  
+      - "3000:3000"
+
+  db:
+    container_name: db
+    build:
+      context: .docker/postgres
+      dockerfile: Dockerfile
+    command: postgres -c log_statement=all
+    volumes:
+      - ./.docker/postgres/data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "54321:5432"
