@@ -6,6 +6,7 @@ import { Client } from "pg";
 async function main() {
   const app = express();
   const port = 3000;
+  
 
   const client = new Client();
   await client.connect();
