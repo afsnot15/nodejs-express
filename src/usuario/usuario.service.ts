@@ -6,15 +6,10 @@ export async function create(usuario: Usuario) {
 
   await client.connect();
 
-  const insertQuery =
-    'INSERT INTO usuario (nome, email, password, admin) VALUES ($1, $2, $3, $4) RETURNING *';
-
-  const res = await client.query(insertQuery, [
-    usuario.nome,
-    usuario.email,
-    usuario.password,
-    usuario.admin,
-  ]);
+  const res = await client.query(
+    'INSERT INTO usuario (nome, email, password, admin) VALUES ($1, $2, $3, $4) RETURNING *',
+    [usuario.nome, usuario.email, usuario.password, usuario.admin]
+  );
 
   await client.end();
 
@@ -26,20 +21,24 @@ export async function update(id: number, usuario: Usuario) {
 
   await client.connect();
 
-  const updateQuery =
-    'UPDATE usuario SET nome = $2, email = $3, password = $4, admin = $5 WHERE id = $1 RETURNING *';
-
-  const res = await client.query(updateQuery, [
-    id,
-    usuario.nome,
-    usuario.email,
-    usuario.password,
-    usuario.admin,
-  ]);
+  const res = await client.query(
+    'UPDATE usuario SET nome = $2, email = $3, password = $4, admin = $5 WHERE id = $1 RETURNING *',
+    [id, usuario.nome, usuario.email, usuario.password, usuario.admin]
+  );
 
   await client.end();
 
   return res.rows[0];
+}
+
+export async function remove(id: number) {
+  const client = new Client();
+
+  await client.connect();
+
+  await client.query('DELETE FROM usuario WHERE id = $1', [id]);
+
+  await client.end();
 }
 
 export async function findAll() {
