@@ -64,3 +64,33 @@ export async function findById(id: number) {
 
   return res.rows[0];
 }
+
+export async function revokeAdmin(id: number) {
+  const client = new Client();
+
+  await client.connect();
+
+  const res = await client.query(
+    'UPDATE usuario SET admin = false WHERE id = $1 RETURNING *',
+    [id]
+  );
+
+  await client.end();
+
+  return res.rows[0];
+}
+
+export async function setAdmin(id: number) {
+  const client = new Client();
+
+  await client.connect();
+
+  const res = await client.query(
+    'UPDATE usuario SET admin = true WHERE id = $1 RETURNING *',
+    [id]
+  );
+
+  await client.end();
+
+  return res.rows[0];
+}
